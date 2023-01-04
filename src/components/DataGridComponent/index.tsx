@@ -3,13 +3,13 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { CellPosition, NavigateToNextCellParams } from "ag-grid-community";
+import { CellPosition, NavigateToNextCellParams, ICellEditorParams } from "ag-grid-community";
 
 export const DataGridComponent = () => {
   const gridRef = useRef<AgGridReact>(null);
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
 
-  // 그리드 데이터
+  // 그리드 더미 데이터
   const [rowData] = useState([
     { make: 'Toyota', model: 'Celica', price: 35000 },
     { make: 'Ford', model: 'Mondeo', price: 32000 },
@@ -25,12 +25,16 @@ export const DataGridComponent = () => {
     { make: 'Porsche', model: 'Boxter', price: 9900 },
   ]);
 
+  const cellEditorSelector = useCallback((params: ICellEditorParams) => {
+    console.log(params);
+  }, []);
+
   // column 설정
   const [columnDefs] = useState([
     { field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true },
     { field: 'make' },
     { field: 'model' },
-    { field: 'price' },
+    { field: 'price', editable: true },
   ]);
 
   // cell 클릭 event
@@ -65,6 +69,8 @@ export const DataGridComponent = () => {
       });
       return suggestedNextCell;
     }, []);
+
+
 
   return (
     <div style={containerStyle}>
