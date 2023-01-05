@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { CellPosition, NavigateToNextCellParams, GridApi, PaginationNumberFormatterParams } from "ag-grid-community";
+import { CellPosition, NavigateToNextCellParams, GridApi, PaginationNumberFormatterParams, RowSelectedEvent } from "ag-grid-community";
 
 export const DataGridComponent = () => {
   const gridRef = useRef<AgGridReact>(null);
@@ -35,9 +35,9 @@ export const DataGridComponent = () => {
     { field: 'price', editable: true },
   ]);
 
-  // cell 클릭 event
-  const onCellClicked = useCallback(() => {
-    console.log('cell clicked')!
+  // cell 클릭 event -> row 선택
+  const onCellClicked = useCallback((params: RowSelectedEvent) => {
+    params.node.setSelected(true)
   }, []);
 
   // grid 전체 data filter
@@ -85,10 +85,17 @@ export const DataGridComponent = () => {
     },
     []);
 
+  const getSelectedRowData = useCallback(() => {
+    let selectedData = gridRef.current!.api.getSelectedRows();
+    console.log(gridRef.current?.api.getSelectedRows());
+    alert(`Selected Nodes:\n${JSON.stringify(selectedData)}`);
+    return selectedData;
+  }, [])
+
   return (
     <div style={containerStyle}>
-      <div className="example-wrapper">
-        <div className="example-header">
+      <div className="example-wrapper" style={{ display: 'flex' }}>
+        <div className="example-header" style={{ margin: 10 }}>
           Page Size:
           <select onChange={(e) => onPageSizeChanged(e.target.value)}>
             <option value="5">5</option>
@@ -98,7 +105,10 @@ export const DataGridComponent = () => {
             <option value="1000">1000</option>
           </select>
         </div>
-        <div style={{ marginBottom: '5px' }}>
+        <button onClick={getSelectedRowData} style={{ margin: 10 }}>
+          Get Selected Data
+        </button>
+        <div style={{ marginBottom: '5px', margin: 10 }}>
           <input
             type="text"
             onInput={onQuickFilterChanged}
@@ -115,7 +125,7 @@ export const DataGridComponent = () => {
           columnDefs={columnDefs}
           defaultColDef={{ sortingOrder: ['desc', 'asc'], sortable: true, resizable: true, minWidth: 100, cellStyle: { textAlign: 'left' } }}
           overlayNoRowsTemplate={'데이터가 없을 때 보여주는 텍스트입니다.'}
-          rowSelection='multiple' // 클릭하고 ctrl, shift 누르면 다중 선택가능
+          rowSelection='single'
           suppressRowClickSelection={true}
           onCellClicked={onCellClicked}
           navigateToNextCell={navigateToNextCell}
