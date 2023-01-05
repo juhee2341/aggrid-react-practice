@@ -3,11 +3,13 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { CellPosition, NavigateToNextCellParams, ICellEditorParams } from "ag-grid-community";
+import { CellPosition, NavigateToNextCellParams, GridApi, PaginationNumberFormatterParams } from "ag-grid-community";
 
 export const DataGridComponent = () => {
   const gridRef = useRef<AgGridReact>(null);
+  const agGrid = useRef<GridApi<any> | null>(null);
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+  const [paginationPageSize, setPaginationPageSize] = useState<number>(5);
 
   // 그리드 더미 데이터
   const [rowData] = useState([
@@ -24,10 +26,6 @@ export const DataGridComponent = () => {
     { make: 'Ford', model: 'Mondeo', price: 52000 },
     { make: 'Porsche', model: 'Boxter', price: 9900 },
   ]);
-
-  const cellEditorSelector = useCallback((params: ICellEditorParams) => {
-    console.log(params);
-  }, []);
 
   // column 설정
   const [columnDefs] = useState([
@@ -70,11 +68,36 @@ export const DataGridComponent = () => {
       return suggestedNextCell;
     }, []);
 
+  // 필요한 이벤트를 지정
+  const onGridReady = () => {
+    agGrid.current?.sizeColumnsToFit();
+  }
 
+  // option value에 따라 page size 변경
+  const onPageSizeChanged = useCallback((value: string) => {
+    setPaginationPageSize(Number(value))
+  }, []);
+
+  // page 보여주는 number에 문자 추가하기 ex) [2]
+  const paginationNumberFormatter = useCallback(
+    (params: PaginationNumberFormatterParams) => {
+      return '[' + params.value.toLocaleString() + ']';
+    },
+    []);
 
   return (
     <div style={containerStyle}>
       <div className="example-wrapper">
+        <div className="example-header">
+          Page Size:
+          <select onChange={(e) => onPageSizeChanged(e.target.value)}>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="100">100</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+          </select>
+        </div>
         <div style={{ marginBottom: '5px' }}>
           <input
             type="text"
@@ -96,7 +119,9 @@ export const DataGridComponent = () => {
           suppressRowClickSelection={true}
           onCellClicked={onCellClicked}
           navigateToNextCell={navigateToNextCell}
-
+          onGridReady={onGridReady}
+          pagination={true}
+          paginationPageSize={paginationPageSize}
         ></AgGridReact>
       </div>
     </div>
