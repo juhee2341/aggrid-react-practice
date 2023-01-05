@@ -85,11 +85,17 @@ export const DataGridComponent = () => {
     },
     []);
 
+  // select 된 row data 보여주기
   const getSelectedRowData = useCallback(() => {
     let selectedData = gridRef.current!.api.getSelectedRows();
     console.log(gridRef.current?.api.getSelectedRows());
     alert(`Selected Nodes:\n${JSON.stringify(selectedData)}`);
     return selectedData;
+  }, [])
+
+  // select 된 row deselect로 변경하기
+  const deselectRowData = useCallback(() => {
+    gridRef.current?.api.deselectAll();
   }, [])
 
   return (
@@ -105,6 +111,9 @@ export const DataGridComponent = () => {
             <option value="1000">1000</option>
           </select>
         </div>
+        <button onClick={deselectRowData} style={{ margin: 10 }}>
+          All Deselect
+        </button>
         <button onClick={getSelectedRowData} style={{ margin: 10 }}>
           Get Selected Data
         </button>
@@ -125,7 +134,7 @@ export const DataGridComponent = () => {
           columnDefs={columnDefs}
           defaultColDef={{ sortingOrder: ['desc', 'asc'], sortable: true, resizable: true, minWidth: 100, cellStyle: { textAlign: 'left' } }}
           overlayNoRowsTemplate={'데이터가 없을 때 보여주는 텍스트입니다.'}
-          rowSelection='single'
+          rowSelection='multiple'
           suppressRowClickSelection={true}
           onCellClicked={onCellClicked}
           navigateToNextCell={navigateToNextCell}
