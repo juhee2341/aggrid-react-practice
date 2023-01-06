@@ -1,9 +1,11 @@
-import { DataGridComponent } from "./components/DataGridComponent";
+import { useDataGrid } from "./hooks/useDataGrid";
+
 
 function App() {
+  const { DataGrid } = useDataGrid();
   return (
     <div className="App">
-      <DataGridComponent />
+      <DataGrid />
     </div>
   );
 }
