@@ -13,7 +13,6 @@ import { dummyData } from "../../dummydata/dummyData";
 
 export const DataGridComponent = () => {
   const gridRef = useRef<AgGridReact>(null);
-  const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
   const [paginationPageSize, setPaginationPageSize] = useState<number>(5);
 
   // 그리드 더미 데이터
@@ -81,7 +80,6 @@ export const DataGridComponent = () => {
   // select 된 row data 보여주기
   const getSelectedRowData = useCallback(() => {
     let selectedData = gridRef.current!.api.getSelectedRows();
-    console.log(gridRef.current?.api.getSelectedRows());
     alert(`Selected Nodes:\n${JSON.stringify(selectedData)}`);
     return selectedData;
   }, []);
@@ -92,32 +90,35 @@ export const DataGridComponent = () => {
   }, []);
 
   return (
-    <div style={containerStyle}>
-      <div className="example-wrapper" style={{ display: 'flex' }}>
-        <div className="example-header" style={{ margin: 10 }}>
-          Page Size:
+    <div className="w-full h-full">
+      <div className="display: flex">
+        <div className="px-4 py-2 m-2 transition duration-500 ease select-none focus:outline-none focus:shadow-outline" style={{ margin: 10 }}>
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Page Size:</label>
           <select
-            className="accent-black"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             onChange={(e) => onPageSizeChanged(e.target.value)}
           >
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="100">100</option>
             <option value="500">500</option>
-            <option value="1000">1000</option>
           </select>
         </div>
         <button
-          className="cursor-pointer"
+          className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2.5  duration-500 ease select-none h-11 hover:bg-gray-800 focus:outline-none focus:shadow-outline"
           onClick={deselectRowData}
-          style={{ margin: 10 }}>
+        >
           All Deselect
         </button>
-        <button onClick={getSelectedRowData} style={{ margin: 10 }}>
+        <button
+          className="border border-indigo-500 bg-indigo-500 text-white rounded-md px-4 py-2 m-2.5 transition duration-500 ease select-none h-11 hover:bg-indigo-600 focus:outline-none focus:shadow-outline"
+          onClick={getSelectedRowData}
+        >
           Get Selected Data
         </button>
-        <div style={{ marginBottom: '5px', margin: 10 }}>
+        <div className="mb-5px m-2.5">
           <input
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             type="text"
             onInput={onQuickFilterChanged}
             id="quickFilter"
@@ -126,7 +127,7 @@ export const DataGridComponent = () => {
         </div>
       </div>
 
-      <div className="ag-theme-alpine" style={{ height: 400, width: 1200 }}>
+      <div className="ag-theme-alpine" style={{ height: "400px" }}>
         <AgGridReact
           ref={gridRef}
           rowData={rowData}
