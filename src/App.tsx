@@ -1,11 +1,10 @@
-import { useDataGrid } from "./hooks/useDataGrid";
-
+import { TestPage } from "./pages/TestPage";
 
 function App() {
-  const { DataGrid } = useDataGrid();
+
   return (
     <div className="App">
-      <DataGrid />
+      <TestPage />
     </div>
   );
 }

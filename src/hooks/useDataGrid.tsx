@@ -1,14 +1,20 @@
-import { useCallback } from "react"
-import { DataGridComponent } from "../components/DataGridComponent/index";
+import { useCallback, useRef } from "react"
+import { DataGridComponent, DataGridHandle, DataGridPropsType } from "../components/DataGridComponent/index";
 
 export const useDataGrid = () => {
+  const DataGridRef = useRef<DataGridHandle>(null);
 
   const DataGrid = useCallback(
-    () => {
-      return <DataGridComponent />;
+    (props: DataGridPropsType) => {
+      return <DataGridComponent {...props} ref={DataGridRef} />;
     }, []);
+
+  const refresh = () => {
+    DataGridRef.current?.refresh();
+  }
 
   return {
     DataGrid,
+    refresh,
   };
 };
