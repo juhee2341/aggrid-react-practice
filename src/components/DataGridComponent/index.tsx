@@ -1,5 +1,5 @@
 import { AgGridReact } from "ag-grid-react";
-import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import {
@@ -89,7 +89,7 @@ export const DataGridComponent = forwardRef(
     };
 
     // option value에 따라 page size 변경
-    const onPageSizeChanged = useCallback((value: string) => {
+    const chagnePageSize = useCallback((value: string) => {
       setPageSize(Number(value))
     }, []);
 
@@ -123,6 +123,10 @@ export const DataGridComponent = forwardRef(
       })
     );
 
+    const onPaginationChanged = useCallback(() => {
+      gridRef.current?.api.deselectAll();
+    }, [])
+
     return (
       <div className="w-full h-full">
         <div className="display: flex">
@@ -130,7 +134,7 @@ export const DataGridComponent = forwardRef(
             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Page Size:</label>
             <select
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onChange={(e) => onPageSizeChanged(e.target.value)}
+              onChange={(e) => chagnePageSize(e.target.value)}
             >
               <option value="5">5</option>
               <option value="10">10</option>
@@ -175,6 +179,7 @@ export const DataGridComponent = forwardRef(
             paginationPageSize={pageSize}
             overlayLoadingTemplate={overlayLoadingTemplate}
             onSelectionChanged={onSelectionChanged}
+            onPaginationChanged={onPaginationChanged}
           ></AgGridReact>
         </div>
       </div>
