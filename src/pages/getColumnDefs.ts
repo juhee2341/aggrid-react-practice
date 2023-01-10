@@ -8,9 +8,9 @@ export type colDef = {
 
 export const getColumnDefs = () => {
   return [
-    { field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true },
-    { field: 'make' },
-    { field: 'model' },
-    { field: 'price', editable: true },
+    { headerName: 'Soldout', field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true, minWidth: 150, maxWidth: 150, },
+    { headerName: 'Make', field: 'make' },
+    { headerName: 'Model', field: 'model' },
+    { headerName: 'Price', field: 'price', editable: true },
   ];
 };

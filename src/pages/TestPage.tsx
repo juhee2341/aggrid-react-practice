@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { dummyData } from "../dummydata/dummyData";
 import { useDataGrid } from "../hooks/useDataGrid"
 import { getColumnDefs } from "./getColumnDefs";
 
 export const TestPage = () => {
-  const { DataGrid, refresh } = useDataGrid();
+  const { DataGrid, refresh, selected } = useDataGrid();
+
+  // 그리드 더미 데이터
   const [rowData, setRowData] = useState<Array<any>>(dummyData);
 
-  const [columnDefs] = useState([
-    { field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true, minWidth: 150, maxWidth: 150, },
-    { field: 'make' },
-    { field: 'model' },
-    { field: 'price', editable: true },
-  ]);
+  const columnDefs = useMemo(() => {
+    console.log(selected);
+    return getColumnDefs();
+  }, [selected]);
+
 
   return (
     <DataGrid rowData={rowData} columnDefs={columnDefs} suppressRowClickSelection sizeColumnsToFit />

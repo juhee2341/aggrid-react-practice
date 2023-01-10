@@ -3,13 +3,11 @@ import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import {
-  CellPosition,
   ColDef,
   ColGroupDef,
-  GridApi,
-  NavigateToNextCellParams,
   PaginationNumberFormatterParams,
-  RowSelectedEvent
+  RowSelectedEvent,
+  SelectionChangedEvent
 } from "ag-grid-community";
 import { IROW } from "../../dummydata/dummyData";
 
@@ -19,7 +17,7 @@ export type DataGridHandle = {
 
 export type DataGridPropsType = {
   rowData: Array<IROW>;
-  columnDefs: any;
+  columnDefs: (ColDef | ColGroupDef)[];
   overlayNoRowsTemplate?: string;
   rowSelection?: 'single' | 'multiple';
   suppressRowClickSelection: boolean;
@@ -27,6 +25,7 @@ export type DataGridPropsType = {
   paginationPageSize?: number;
   overlayLoadingTemplate?: string;
   sizeColumnsToFit?: boolean;
+  onSelectionChanged(e: SelectionChangedEvent): void;
 }
 
 export const DataGridComponent = forwardRef(
@@ -39,22 +38,12 @@ export const DataGridComponent = forwardRef(
       suppressRowClickSelection,
       overlayLoadingTemplate = '<span class="ag-overlay-loading-center">잠시만 기다려주세요...</span>',
       sizeColumnsToFit,
+      onSelectionChanged,
     }: DataGridPropsType,
     ref,
   ) => {
     const gridRef = useRef<AgGridReact>(null);
     const [pageSize, setPageSize] = useState<number>(5);
-
-    // 그리드 더미 데이터
-    // const [rowData, setRowData] = useState<Array<any>>(dummyData);
-
-    // column 설정
-    // const [columnDefs] = useState([
-    //   { field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true },
-    //   { field: 'make' },
-    //   { field: 'model' },
-    //   { field: 'price', editable: true },
-    // ]);
 
     // cell 클릭 event -> row 선택
     const onCellClicked = useCallback((params: RowSelectedEvent) => {
@@ -132,7 +121,7 @@ export const DataGridComponent = forwardRef(
           gridRef.current?.api.refreshClientSideRowModel();
         }
       })
-    )
+    );
 
     return (
       <div className="w-full h-full">
@@ -185,6 +174,7 @@ export const DataGridComponent = forwardRef(
             pagination={true}
             paginationPageSize={pageSize}
             overlayLoadingTemplate={overlayLoadingTemplate}
+            onSelectionChanged={onSelectionChanged}
           ></AgGridReact>
         </div>
       </div>
