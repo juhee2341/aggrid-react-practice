@@ -62,10 +62,8 @@ export const DataGridComponent = forwardRef(
     }, []);
 
     // grid 전체 data filter
-    const onQuickFilterChanged = useCallback(() => {
-      gridRef.current?.api.setQuickFilter(
-        (document.getElementById('quickFilter') as HTMLInputElement).value
-      );
+    const onQuickFilterChanged = useCallback((search: string) => {
+      gridRef.current?.api.setQuickFilter(search);
     }, []);
 
     // 키보드 화살표 키로 row 선택 이동시 row 표시
@@ -95,9 +93,9 @@ export const DataGridComponent = forwardRef(
       //sizeColumnsToFit Grid 전체 column 맞추기
       if (sizeColumnsToFit) {
         gridRef.current?.api.sizeColumnsToFit();
-        // agGrid.current?.sizeColumnsToFit();
       }
 
+      // row data 설정하기
       gridRef.current?.api.setRowData(rowData);
     };
 
@@ -167,8 +165,7 @@ export const DataGridComponent = forwardRef(
             <input
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               type="text"
-              onInput={onQuickFilterChanged}
-              id="quickFilter"
+              onChange={(e) => onQuickFilterChanged(e.target.value)}
               placeholder="검색어를 입력하세요."
             />
           </div>

@@ -8,7 +8,7 @@ export const TestPage = () => {
   const [rowData, setRowData] = useState<Array<any>>(dummyData);
 
   const [columnDefs] = useState([
-    { field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true },
+    { field: 'soldout', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true, minWidth: 150, maxWidth: 150, },
     { field: 'make' },
     { field: 'model' },
     { field: 'price', editable: true },
